@@ -8,9 +8,12 @@ __pycache__/
 testing_area/
 training_area/
 Grid_AOI/
-data/
+train/
+test/
+val/
 *.jp2
 *.npy
+runs/
 
 
 # C extensions

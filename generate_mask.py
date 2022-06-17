@@ -17,6 +17,8 @@ import numpy as np
 import cv2
 import matplotlib.pyplot as plt
 
+from utils import color_group
+
 ## tutorial from https://lpsmlgeo.github.io/2019-09-22-binary_mask/
 
 raster_path = "raw_data/sentinel-2-image/2021/20210106/IMG_DATA/47PQS_20210106_B02.jp2"
@@ -116,13 +118,6 @@ def package(poly_shp, name, src):
                                   4 *mask['4'][i,j] 
             
     color_mask = color_mask.astype(np.uint8)
-    color_group = np.array([[0,0,0],  # black - unknown
-                       [255,0,0], # red - cassava 
-                       [0, 255, 0],  # green - rice
-                       [0, 0, 255],  # blue - maize 
-                       [255, 255, 255],  # grey - sugarcane 
-                       ]) 
-
     np.save(name+'label.npy', color_mask)
     cv2.imwrite(name+'mask_color.png', color_group[color_mask])
 
