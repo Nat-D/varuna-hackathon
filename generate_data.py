@@ -75,3 +75,16 @@ if __name__ == "__main__":
     img1, label1 = random_crop_data(crop_size=500, img=combined, label=train_label)
     print(img1.shape)
     print(label1.shape)
+
+    # TODO: use more than one day
+    for i in range(20): # as a test let's do 20
+        img, label = random_crop_data(crop_size=500, img=combined, label=train_label)
+        np.save(f'data/train/{i}.npy', img)
+        np.save(f'data/train/{i}_label.npy', label)
+
+    for i in range(20):
+        img, label = random_crop_data(crop_size=500, img=combined, label=val_label)
+        np.save(f'data/val/{i}.npy', img)
+        np.save(f'data/val/{i}_label.npy', label)
+
+    
