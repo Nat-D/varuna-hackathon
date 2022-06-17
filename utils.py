@@ -81,9 +81,14 @@ class Logger():
     def compute_precision(self, true_pos, false_pos, false_neg):
         return true_pos / (true_pos + false_pos + 1e-5)
 
+    # we probably want high recall
+    # how many pixel of plant we correctly retrieved
     def compute_recall(self, true_pos, false_pos, false_neg):
         return true_pos / (false_neg + true_pos + 1e-5)
 
+    # iou becomes somewhat useless in the present of unknown class
+    # false_positive becomes unreliable because it might be true_positive
+    # but we don't have the label
     def compute_iou(self, true_pos, false_pos, false_neg):
         return true_pos / (true_pos + false_pos + false_neg + 1e-5)
 
@@ -93,7 +98,8 @@ class Logger():
 
         total_loss = 0
         num_step = 0
-        total_iou_for_each_class = 0
+        #total_iou_for_each_class = 0
+        total_recall_for_each_class = 0
 
         with torch.no_grad():
             for x,y in loader:
@@ -102,6 +108,8 @@ class Logger():
 
                 preds = model(x)
                 loss = self.loss_fn(preds, y)
+
+                # TODO: compute masked loss
                 
                 total_loss += loss
                 num_step += 1
@@ -123,21 +131,30 @@ class Logger():
                 false_neg = torch.logical_and((preds_max == zeros), (preds_max != y))
                 false_neg = torch.sum(false_neg, dim=(1,2))
                 
-                iou = self.compute_iou(true_pos, false_pos, false_neg) 
-                total_iou_for_each_class += torch.sum(iou, dim=0)
+                #iou = self.compute_iou(true_pos, false_pos, false_neg) 
+                #total_iou_for_each_class += torch.sum(iou, dim=0)
                 
+                recall = self.compute_recall(true_pos, false_pos, false_neg)
+                total_recall_for_each_class += torch.sum(recall, dim=0)
 
         self.writer.add_scalar("Loss/Average_validation_loss", 
                                 total_loss/num_step, 
                                 self.training_step)
 
+        #for cls in range(model.out_channels):
+        #    self.writer.add_scalar(f"IoU/Average_iou_class_{cls}",
+        #                           total_iou_for_each_class[cls]/(num_step * loader.batch_size),
+        #                           self.training_step)
+        #self.writer.add_scalar("meanIoU", 
+        #    torch.sum(total_iou_for_each_class[1:])/(num_step * loader.batch_size * (model.out_channels-1)),
+        #    self.training_step)
+
         for cls in range(model.out_channels):
-            self.writer.add_scalar(f"IoU/Average_iou_class_{cls}",
-                                   total_iou_for_each_class[cls]/(num_step * loader.batch_size),
+            self.writer.add_scalar(f"Recall/Average_recall_class_{cls}",
+                                   total_recall_for_each_class[cls]/(num_step * loader.batch_size),
                                    self.training_step)
-        self.writer.add_scalar("meanIoU", 
-            # exclude the unknown class; 
-            torch.sum(total_iou_for_each_class[1:])/(num_step * loader.batch_size * (model.out_channels-1)),
+        self.writer.add_scalar("meanRecall", 
+            torch.sum(total_recall_for_each_class[1:])/(num_step * loader.batch_size * (model.out_channels-1)),
             self.training_step)
 
         model.train()
