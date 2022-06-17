@@ -76,15 +76,38 @@ if __name__ == "__main__":
     print(img1.shape)
     print(label1.shape)
 
-    # TODO: use more than one day
-    for i in range(20): # as a test let's do 20
-        img, label = random_crop_data(crop_size=500, img=combined, label=train_label)
-        np.save(f'data/train/img/{i}.npy', img)
-        np.save(f'data/train/mask/{i}_label.npy', label)
+    # selected without cloud
+    days = [20210101
+            ,20210106
+            ,20210111
+            ,20210116
+            ,20210126
+            ,20210205
+            ,20210215
+            ,20210220
+            ,20210307
+            ,20210312
+            ,20210327
+            ,20210416
+            ,20210705]
+    day_idx = 0
+    for day in days:
+        paths = get_raw_data_paths('2021', str(day))
+        combined = combine_spectrum(paths)
 
-    for i in range(20):
-        img, label = random_crop_data(crop_size=500, img=combined, label=val_label)
-        np.save(f'data/val/img/{i}.npy', img)
-        np.save(f'data/val/mask/{i}_label.npy', label)
+        # for some reason some samples are missing
+        num_crop_per_img = 20
+        for i in range(num_crop_per_img): # as a test let's do 20
+            img, label = random_crop_data(crop_size=500, img=combined, label=train_label)
+            np.save(f'data/train/img/{num_crop_per_img*i+day_idx}.npy', img)
+            np.save(f'data/train/mask/{num_crop_per_img*i+day_idx}_label.npy', label)
+        
+        num_crop_per_img_val = 5
+        for i in range(5):
+            img, label = random_crop_data(crop_size=500, img=combined, label=val_label)
+            np.save(f'data/val/img/{num_crop_per_img_val*i+day_idx}.npy', img)
+            np.save(f'data/val/mask/{num_crop_per_img_val*i+day_idx}_label.npy', label)
+        
+        day_idx += 1
 
-    
+
