@@ -3,6 +3,16 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+# varuna data
+*image/
+testing_area/
+training_area/
+Grid_AOI/
+data/
+*.jp2
+*.npy
+
+
 # C extensions
 *.so
 
