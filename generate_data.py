@@ -96,15 +96,15 @@ if __name__ == "__main__":
         combined = combine_spectrum(paths)
 
         # for some reason some samples are missing
-        num_crop_per_img = 20
+        num_crop_per_img = 60
         for i in range(num_crop_per_img): # as a test let's do 20
-            img, label = random_crop_data(crop_size=500, img=combined, label=train_label)
+            img, label = random_crop_data(crop_size=128, img=combined, label=train_label)
             np.save(f'data/train/img/{i+num_crop_per_img*day_idx}.npy', img)
             np.save(f'data/train/mask/{i+num_crop_per_img*day_idx}_label.npy', label)
         
         num_crop_per_img_val = 5
         for i in range(5):
-            img, label = random_crop_data(crop_size=500, img=combined, label=val_label)
+            img, label = random_crop_data(crop_size=512, img=combined, label=val_label)
             np.save(f'data/val/img/{i+num_crop_per_img_val*day_idx}.npy', img)
             np.save(f'data/val/mask/{i+num_crop_per_img_val*day_idx}_label.npy', label)
         

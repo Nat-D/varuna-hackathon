@@ -31,6 +31,7 @@ def get_loaders(
     val_dir,
     val_maskdir,
     batch_size,
+    batch_size_val,
     train_transform,
     val_transform,
     num_workers=4,
@@ -58,7 +59,7 @@ def get_loaders(
 
     val_loader = DataLoader(
             val_ds,
-            batch_size=batch_size,
+            batch_size=batch_size_val,
             num_workers=num_workers,
             pin_memory=pin_memory,
             shuffle=False

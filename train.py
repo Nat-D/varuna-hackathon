@@ -13,7 +13,7 @@ import argparse
 parser = argparse.ArgumentParser()
 parser.add_argument('--name', type=str, default='', help='Experiment name')
 parser.add_argument('--lr', type=float, default=1e-4, help='Learning rate')
-parser.add_argument('--bs', type=int, default=4, help='Batch size')
+parser.add_argument('--bs', type=int, default=32, help='Batch size')
 parser.add_argument('--epochs', type=int, default=10000, help='Number of training epoch')
 parser.add_argument('--preprocess', type=str, default='PS', help='How to standardize input')
 parser.add_argument('--save', action='store_true', default=False, help='save model')
@@ -28,11 +28,14 @@ LOG_DIR = f"runs/{args.name}"
 LEARNING_RATE = args.lr
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 BATCH_SIZE = args.bs
+BATCH_SIZE_VAL = 4
 NUM_EPOCHS = args.epochs
 NUM_WORKERS = 4
-IMAGE_HEIGHT = 500
-IMAGE_WIDTH = 500
-MIN_MAX_HEIGHT = (480,500)
+IMAGE_HEIGHT = 128
+IMAGE_WIDTH = 128
+VAL_HEIGHT = 512
+VAL_WIDTH = 512
+MIN_MAX_HEIGHT = (120,128)
 PIN_MEMORY = True
 
 
@@ -82,7 +85,7 @@ def main():
 
     val_transforms = A.Compose([
             A.ToFloat(max_value=65535.0),
-            A.Resize(height=IMAGE_HEIGHT, width=IMAGE_WIDTH),
+            A.Resize(height=VAL_HEIGHT, width=VAL_WIDTH), #hack
             ToTensorV2()
         ])
 
@@ -108,6 +111,7 @@ def main():
         VAL_IMG_DIR,
         VAL_MASK_DIR,
         BATCH_SIZE,
+        BATCH_SIZE_VAL,
         train_transform,
         val_transforms,
         NUM_WORKERS,
