@@ -143,3 +143,6 @@ if __name__ == "__main__":
         test_mask = rasterize(shapes=poly_shp_test, out_shape=im_size)
         cv2.imwrite('test_mask.png', test_mask*255)
         np.save('test_label.npy', test_mask)
+
+        # TODO: mask with [unknown, cassava, rice, maize, sugarcane, *background*] 
+        

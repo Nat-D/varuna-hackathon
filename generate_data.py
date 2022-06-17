@@ -7,9 +7,9 @@ import os
 import cv2 
 import numpy
 
+SIZE = (2051,2051)
+
 raw_data_dir = "raw_data/sentinel-2-image/"
-train_label = np.load("raw_data/train_label.npy") # generated from generate_mask.py
-val_label = np.load("raw_data/val_label.npy")
 
 def get_raw_data_paths(year, date):
     paths = {}
@@ -34,7 +34,7 @@ def combine_spectrum(paths):
 
     raw_spectrum = {}
     for band, path in paths.items():
-        raw_spectrum[band] = cv2.resize(cv2.imread(path, cv2.IMREAD_ANYDEPTH), dsize=(2051,2051))
+        raw_spectrum[band] = cv2.resize(cv2.imread(path, cv2.IMREAD_ANYDEPTH), dsize=SIZE)
     # ignore scl/tci/wvp just to keep it raw
     combined = np.dstack((raw_spectrum['aot'], 
                           raw_spectrum['b1'], 
@@ -51,7 +51,27 @@ def combine_spectrum(paths):
     return combined
 
 
-paths = get_raw_data_paths('2021', '20210106')
-combined = combine_spectrum(paths)
 
-print(combined.shape)
+def random_crop_data(crop_size, img, label):
+    rand_h = int( (SIZE[0]-crop_size) * np.random.rand() ) 
+    rand_w = int( (SIZE[1]-crop_size) * np.random.rand() )# uniform random
+    
+    croped_img = img[rand_h:rand_h+crop_size, rand_w:rand_w+crop_size, :]
+    croped_label = label[rand_h:rand_h+crop_size, rand_w:rand_w+crop_size]
+
+    return croped_img, croped_label
+
+
+if __name__ == "__main__":
+
+    paths = get_raw_data_paths('2021', '20210106')
+    combined = combine_spectrum(paths)
+
+    print(combined.shape) #(2051, 2051, 12)
+    
+    train_label = np.load("raw_data/train_label.npy") # generated from generate_mask.py
+    val_label = np.load("raw_data/val_label.npy")
+
+    img1, label1 = random_crop_data(crop_size=500, img=combined, label=train_label)
+    print(img1.shape)
+    print(label1.shape)
