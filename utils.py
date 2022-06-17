@@ -76,7 +76,7 @@ class Logger():
         self.accumulate_training_loss = 0.0
         self.training_step = 0
         self.epoch_num_step = 0
-        self.loss_fn = nn.CrossEntropyLoss()
+        self.loss_fn = nn.CrossEntropyLoss(weight = torch.tensor([0,1,1,1,1]).float().to(device))
 
     def compute_precision(self, true_pos, false_pos, false_neg):
         return true_pos / (true_pos + false_pos + 1e-5)
@@ -108,9 +108,7 @@ class Logger():
 
                 preds = model(x)
                 loss = self.loss_fn(preds, y)
-
-                # TODO: compute masked loss
-                
+    
                 total_loss += loss
                 num_step += 1
 
