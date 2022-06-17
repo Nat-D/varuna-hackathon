@@ -99,14 +99,14 @@ if __name__ == "__main__":
         num_crop_per_img = 20
         for i in range(num_crop_per_img): # as a test let's do 20
             img, label = random_crop_data(crop_size=500, img=combined, label=train_label)
-            np.save(f'data/train/img/{num_crop_per_img*i+day_idx}.npy', img)
-            np.save(f'data/train/mask/{num_crop_per_img*i+day_idx}_label.npy', label)
+            np.save(f'data/train/img/{i+num_crop_per_img*day_idx}.npy', img)
+            np.save(f'data/train/mask/{i+num_crop_per_img*day_idx}_label.npy', label)
         
         num_crop_per_img_val = 5
         for i in range(5):
             img, label = random_crop_data(crop_size=500, img=combined, label=val_label)
-            np.save(f'data/val/img/{num_crop_per_img_val*i+day_idx}.npy', img)
-            np.save(f'data/val/mask/{num_crop_per_img_val*i+day_idx}_label.npy', label)
+            np.save(f'data/val/img/{i+num_crop_per_img_val*day_idx}.npy', img)
+            np.save(f'data/val/mask/{i+num_crop_per_img_val*day_idx}_label.npy', label)
         
         day_idx += 1
 

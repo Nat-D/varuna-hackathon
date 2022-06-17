@@ -192,6 +192,5 @@ class Logger():
         self.epoch_num_step = 0
 
         
-        if self.training_step % 5 == 0:
-            self.save_predictions_as_img(val_loader, model)
-            self.validation(val_loader, model)
+        self.save_predictions_as_img(val_loader, model)
+        self.validation(val_loader, model)
