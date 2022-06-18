@@ -27,7 +27,7 @@ LOG_DIR = f"runs/{args.name}"
 # Hyper parameters
 LEARNING_RATE = args.lr
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
-BATCH_SIZE = 6 #args.bs
+BATCH_SIZE = 8 #args.bs
 BATCH_SIZE_VAL = 4
 NUM_EPOCHS = args.epochs
 NUM_WORKERS = 4
