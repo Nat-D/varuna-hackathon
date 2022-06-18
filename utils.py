@@ -24,6 +24,8 @@ def load_checkpoint(checkpoint, model):
     print("=> Loading checkpoint")
     model.load_state_dict(checkpoint["state_dict"])
 
+    return model
+
 
 def get_loaders(
     train_dir,
