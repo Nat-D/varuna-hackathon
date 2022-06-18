@@ -68,19 +68,14 @@ if __name__ == "__main__":
     train_label = np.load("raw_data/train_label.npy") # generated from generate_mask.py
     val_label = np.load("raw_data/val_label.npy")
 
-    days = [20210101
+    days =  [20210101
             ,20210106
             ,20210111
             ,20210116
             ,20210126
             ,20210205
             ,20210215]
-            #,20210220
-            #,20210307
-            #,20210312
-            #,20210327
-            #,20210416
-            #,20210705]
+
     day_idx = 0
 
     train_label = np.load("raw_data/train_label.npy") # generated from generate_mask.py
@@ -90,7 +85,6 @@ if __name__ == "__main__":
         paths = get_raw_data_paths('2021', str(day))
         combined = combine_spectrum(paths)
 
-        # for some reason some samples are missing
         num_crop_per_img = 60
         for i in range(num_crop_per_img): # as a test let's do 20
             img, label = random_crop_data(crop_size=128, img=combined, label=train_label)
