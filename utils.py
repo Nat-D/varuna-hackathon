@@ -91,7 +91,6 @@ class Logger():
 
     # iou becomes somewhat useless in the present of unknown class
     # false_positive becomes unreliable because it might be true_positive
-    # but we don't have the label
     def compute_iou(self, true_pos, false_pos, false_neg):
         return true_pos / (true_pos + false_pos + false_neg + 1e-5)
 
