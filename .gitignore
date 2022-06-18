@@ -4,6 +4,7 @@ __pycache__/
 *$py.class
 
 # varuna data
+*.png
 *image/
 testing_area/
 training_area/
