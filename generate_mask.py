@@ -93,7 +93,7 @@ def generate_mask(shape_path, src, test=False):
         return poly_shp_test
 
 
-def package(poly_shp, name, src):
+def package(poly_shp, name, src, background_mask):
     mask = {}
     mask['1'] = []
     mask['2'] = []
@@ -115,7 +115,8 @@ def package(poly_shp, name, src):
                 color_mask[i,j] = 1 *mask['1'][i,j] + \
                                   2 *mask['2'][i,j] + \
                                   3 *mask['3'][i,j] + \
-                                  4 *mask['4'][i,j] 
+                                  4 *mask['4'][i,j] + \
+                                  5 *background_mask[i,j]
             
     color_mask = color_mask.astype(np.uint8)
     np.save(name+'label.npy', color_mask)
@@ -128,16 +129,20 @@ if __name__ == "__main__":
     testing_shape_path = "raw_data/testing_area/"
 
     with rasterio.open(raster_path, "r") as src:
-        #poly_shp_train, poly_shp_val = generate_mask(training_shape_path, src)
 
-        #package(poly_shp_train, 'v2_train_', src)
-        #package(poly_shp_val, 'v2_val_', src)
-
+        poly_shp_train_without_label = generate_mask(training_shape_path, src, test=True)
         poly_shp_test = generate_mask(testing_shape_path, src, test=True)
-        im_size = (src.meta['height'], src.meta['width'])
-        test_mask = rasterize(shapes=poly_shp_test, out_shape=im_size)
-        cv2.imwrite('test_mask.png', test_mask*255)
-        np.save('test_label.npy', test_mask)
 
-        # TODO: mask with [unknown, cassava, rice, maize, sugarcane, *background*] 
+        print(len(poly_shp_train_without_label))
+        poly_shp_combine = poly_shp_train_without_label + poly_shp_test
+        print(len(poly_shp_combine))
+
+        im_size = (src.meta['height'], src.meta['width'])
+        bg_mask = 1 - rasterize(shapes=poly_shp_combine, out_shape=im_size)
+        cv2.imwrite('raw_data/bg_mask.png', bg_mask*255)
+
+        poly_shp_train, poly_shp_val = generate_mask(training_shape_path, src)
+        package(poly_shp_train, 'raw_data/v2_train_', src, bg_mask)
+        package(poly_shp_val, 'raw_data/v2_val_', src, bg_mask)
+
         

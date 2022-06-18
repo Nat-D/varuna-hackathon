@@ -69,12 +69,9 @@ if __name__ == "__main__":
 
     print(combined.shape) #(2051, 2051, 12)
     
-    train_label = np.load("raw_data/train_label.npy") # generated from generate_mask.py
-    val_label = np.load("raw_data/val_label.npy")
+    train_label = np.load("raw_data/v2_train_label.npy") # generated from generate_mask.py
+    val_label = np.load("raw_data/v2_val_label.npy")
 
-    img1, label1 = random_crop_data(crop_size=500, img=combined, label=train_label)
-    print(img1.shape)
-    print(label1.shape)
 
     # selected without cloud
     days = [20210101

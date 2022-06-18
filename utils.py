@@ -11,7 +11,8 @@ color_group = np.array([[0,0,0],  # black - unknown
                        [255,0,0], # red - cassava 
                        [0, 255, 0],  # green - rice
                        [0, 0, 255],  # blue - maize 
-                       [255, 255, 255],  # grey - sugarcane 
+                       [255, 255, 255],  # white - sugarcane 
+                       [100, 100, 100]   # grey 
                        ]) 
 
 
@@ -77,7 +78,8 @@ class Logger():
         self.accumulate_training_loss = 0.0
         self.training_step = 0
         self.epoch_num_step = 0
-        self.loss_fn = nn.CrossEntropyLoss(weight = torch.tensor([0,1,1,1,1]).float().to(device))
+        # compute validation loss only on crops type, ignore background and unknown
+        self.loss_fn = nn.CrossEntropyLoss(weight = torch.tensor([0,1,1,1,1,0]).float().to(device))
 
     def compute_precision(self, true_pos, false_pos, false_neg):
         return true_pos / (true_pos + false_pos + 1e-5)
@@ -153,7 +155,7 @@ class Logger():
                                    total_recall_for_each_class[cls]/(num_step * loader.batch_size),
                                    self.training_step)
         self.writer.add_scalar("meanRecall", 
-            torch.sum(total_recall_for_each_class[1:])/(num_step * loader.batch_size * (model.out_channels-1)),
+            torch.sum(total_recall_for_each_class[1:5])/(num_step * loader.batch_size * (model.out_channels-1)),
             self.training_step)
 
         model.train()
@@ -170,9 +172,11 @@ class Logger():
  
             for idx in range(preds_np.shape[0]):
                 
-                binary_mask = np.expand_dims(np.not_equal(y[idx], 0), axis=2)
+                #binary_mask = np.expand_dims(np.not_equal(y[idx], 0), axis=2)
                  ##
-                rgb_mask = binary_mask * color_group[preds_np[idx]]
+                #rgb_mask = binary_mask * color_group[preds_np[idx]]
+                rgb_mask = color_group[preds_np[idx]]
+
                 self.writer.add_image(f'{idx}/predict', rgb_mask/255., self.training_step, dataformats="HWC")
 
                 rgb_mask_groundtruth = color_group[y[idx]]

@@ -95,12 +95,13 @@ def main():
                              device=DEVICE)
 
     if args.model == 'UNET':
-        model = NoNameUNET(in_channels=12, out_channels=5, preprocess=preprocess).to(DEVICE)
+        #model = NoNameUNET(in_channels=12, out_channels=5, preprocess=preprocess).to(DEVICE)
+        model = NoNameUNET(in_channels=12, out_channels=6, preprocess=preprocess).to(DEVICE)
     else:
         raise NotImplementedError("No model")
 
-    # mask out the unknown class
-    weight = torch.tensor([0,1,1.1,1,1.5]).float().to(DEVICE)
+    # mask out the unknown class, weight down bg class
+    weight = torch.tensor([0,1,1.1,1,1.5,0.1]).float().to(DEVICE)
     loss_fn = nn.CrossEntropyLoss(weight=weight)
 
     optimizer = optim.AdamW(model.parameters(), lr=LEARNING_RATE)
