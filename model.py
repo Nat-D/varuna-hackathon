@@ -95,7 +95,7 @@ class NoNameUNET(nn.Module):
     def forward(self, x):
         
         
-        x = self.preprocess(x)
+        #x = self.preprocess(x)
 
 
 

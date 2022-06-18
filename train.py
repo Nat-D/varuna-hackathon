@@ -95,7 +95,7 @@ def main():
                              device=DEVICE)
 
     if args.model == 'UNET':
-        model = NoNameUNET(in_channels=12, out_channels=5, preprocess=preprocess).to(DEVICE)
+        model = NoNameUNET(in_channels=5, out_channels=5, preprocess=preprocess).to(DEVICE)
     else:
         raise NotImplementedError("No model")
 

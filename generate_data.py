@@ -37,7 +37,14 @@ def combine_spectrum(paths, max_ndvi=None):
     for band, path in paths.items():
         raw_spectrum[band] = cv2.resize(cv2.imread(path, cv2.IMREAD_ANYDEPTH), dsize=SIZE)
     # ignore scl/tci/wvp just to keep it raw
+    
+    ndvi = ndvi(raw_spectrum)
+    gndvi = gndvi(raw_spectrum)
+    avi = avi(raw_spectrum)
+    ndmi = ndmi(raw_spectrum)
+    evi = evi(raw_spectrum)
 
+    """
     combined = np.dstack((raw_spectrum['aot'], 
                           raw_spectrum['b1'], 
                           raw_spectrum['b2'], 
@@ -51,6 +58,10 @@ def combine_spectrum(paths, max_ndvi=None):
                           raw_spectrum['b11'], 
                           raw_spectrum['b12'],
                         ))
+    """
+    combined = np.dstack((ndvi, gndvi, avi, ndmi, evi))
+
+
     return combined
 
 def get_raw_sepctrum(paths):
