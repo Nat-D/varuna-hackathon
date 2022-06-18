@@ -64,33 +64,28 @@ def random_crop_data(crop_size, img, label):
 
 if __name__ == "__main__":
 
-    paths = get_raw_data_paths('2021', '20210106')
-    combined = combine_spectrum(paths)
-
-    print(combined.shape) #(2051, 2051, 12)
     
     train_label = np.load("raw_data/train_label.npy") # generated from generate_mask.py
     val_label = np.load("raw_data/val_label.npy")
 
-    img1, label1 = random_crop_data(crop_size=500, img=combined, label=train_label)
-    print(img1.shape)
-    print(label1.shape)
-
-    # selected without cloud
     days = [20210101
             ,20210106
             ,20210111
             ,20210116
             ,20210126
             ,20210205
-            ,20210215
-            ,20210220
-            ,20210307
-            ,20210312
-            ,20210327
-            ,20210416
-            ,20210705]
+            ,20210215]
+            #,20210220
+            #,20210307
+            #,20210312
+            #,20210327
+            #,20210416
+            #,20210705]
     day_idx = 0
+
+    train_label = np.load("raw_data/train_label.npy") # generated from generate_mask.py
+    val_label = np.load("raw_data/val_label.npy")
+
     for day in days:
         paths = get_raw_data_paths('2021', str(day))
         combined = combine_spectrum(paths)

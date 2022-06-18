@@ -128,10 +128,10 @@ if __name__ == "__main__":
     testing_shape_path = "raw_data/testing_area/"
 
     with rasterio.open(raster_path, "r") as src:
-        #poly_shp_train, poly_shp_val = generate_mask(training_shape_path, src)
+        poly_shp_train, poly_shp_val = generate_mask(training_shape_path, src)
 
-        #package(poly_shp_train, 'v2_train_', src)
-        #package(poly_shp_val, 'v2_val_', src)
+        package(poly_shp_train, 'raw_data/train_', src)
+        package(poly_shp_val, 'raw_data/val_', src)
 
         poly_shp_test = generate_mask(testing_shape_path, src, test=True)
         im_size = (src.meta['height'], src.meta['width'])
