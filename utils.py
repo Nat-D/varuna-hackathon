@@ -155,7 +155,7 @@ class Logger():
                                    total_recall_for_each_class[cls]/(num_step * loader.batch_size),
                                    self.training_step)
         self.writer.add_scalar("meanRecall", 
-            torch.sum(total_recall_for_each_class[1:5])/(num_step * loader.batch_size * (model.out_channels-1)),
+            torch.sum(total_recall_for_each_class[1:5])/(num_step * loader.batch_size * (model.out_channels-2)),
             self.training_step)
 
         model.train()
