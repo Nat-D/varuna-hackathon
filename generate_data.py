@@ -64,19 +64,12 @@ def random_crop_data(crop_size, img, label):
 
 if __name__ == "__main__":
 
-    paths = get_raw_data_paths('2021', '20210106')
-    combined = combine_spectrum(paths)
-
-    print(combined.shape) #(2051, 2051, 12)
     
     train_label = np.load("raw_data/train_label.npy") # generated from generate_mask.py
     val_label = np.load("raw_data/val_label.npy")
 
-    img1, label1 = random_crop_data(crop_size=500, img=combined, label=train_label)
-    print(img1.shape)
-    print(label1.shape)
 
-    # selected without cloud
+    # Hand selected for good quality images without clouds
     days = [20210101
             ,20210106
             ,20210111
@@ -88,26 +81,30 @@ if __name__ == "__main__":
             ,20210307
             ,20210312
             ,20210327
-            ,20210416
-            ,20210705]
+            ,20210416]
     day_idx = 0
+
+    train_label = np.load("raw_data/train_label.npy") # generated from generate_mask.py
+    val_label = np.load("raw_data/val_label.npy")
+
     for day in days:
         paths = get_raw_data_paths('2021', str(day))
         combined = combine_spectrum(paths)
 
         # for some reason some samples are missing
-        num_crop_per_img = 20
+        num_crop_per_img = 60
         for i in range(num_crop_per_img): # as a test let's do 20
-            img, label = random_crop_data(crop_size=500, img=combined, label=train_label)
+            img, label = random_crop_data(crop_size=128, img=combined, label=train_label)
             np.save(f'data/train/img/{i+num_crop_per_img*day_idx}.npy', img)
             np.save(f'data/train/mask/{i+num_crop_per_img*day_idx}_label.npy', label)
         
-        num_crop_per_img_val = 5
-        for i in range(5):
-            img, label = random_crop_data(crop_size=500, img=combined, label=val_label)
+        num_crop_per_img_val = 20
+        for i in range(num_crop_per_img_val):
+            img, label = random_crop_data(crop_size=512, img=combined, label=val_label)
             np.save(f'data/val/img/{i+num_crop_per_img_val*day_idx}.npy', img)
             np.save(f'data/val/mask/{i+num_crop_per_img_val*day_idx}_label.npy', label)
         
         day_idx += 1
 
 
+    print('Succesfully create a dataset')

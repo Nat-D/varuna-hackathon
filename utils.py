@@ -24,8 +24,6 @@ def load_checkpoint(checkpoint, model):
     print("=> Loading checkpoint")
     model.load_state_dict(checkpoint["state_dict"])
 
-    return model
-
 
 def get_loaders(
     train_dir,
@@ -33,6 +31,7 @@ def get_loaders(
     val_dir,
     val_maskdir,
     batch_size,
+    batch_size_val,
     train_transform,
     val_transform,
     num_workers=4,
@@ -60,7 +59,7 @@ def get_loaders(
 
     val_loader = DataLoader(
             val_ds,
-            batch_size=batch_size,
+            batch_size=batch_size_val,
             num_workers=num_workers,
             pin_memory=pin_memory,
             shuffle=False
@@ -78,7 +77,7 @@ class Logger():
         self.accumulate_training_loss = 0.0
         self.training_step = 0
         self.epoch_num_step = 0
-        self.loss_fn = nn.CrossEntropyLoss()
+        self.loss_fn = nn.CrossEntropyLoss(weight = torch.tensor([0,1,1,1,1]).float().to(device))
 
     def compute_precision(self, true_pos, false_pos, false_neg):
         return true_pos / (true_pos + false_pos + 1e-5)
@@ -110,9 +109,7 @@ class Logger():
 
                 preds = model(x)
                 loss = self.loss_fn(preds, y)
-
-                # TODO: compute masked loss
-                
+    
                 total_loss += loss
                 num_step += 1
 
@@ -132,10 +129,7 @@ class Logger():
 
                 false_neg = torch.logical_and((preds_max == zeros), (preds_max != y))
                 false_neg = torch.sum(false_neg, dim=(1,2))
-                
-                #iou = self.compute_iou(true_pos, false_pos, false_neg) 
-                #total_iou_for_each_class += torch.sum(iou, dim=0)
-                
+                          
                 recall = self.compute_recall(true_pos, false_pos, false_neg)
                 total_recall_for_each_class += torch.sum(recall, dim=0)
 
@@ -143,18 +137,12 @@ class Logger():
                                 total_loss/num_step, 
                                 self.training_step)
 
-        #for cls in range(model.out_channels):
-        #    self.writer.add_scalar(f"IoU/Average_iou_class_{cls}",
-        #                           total_iou_for_each_class[cls]/(num_step * loader.batch_size),
-        #                           self.training_step)
-        #self.writer.add_scalar("meanIoU", 
-        #    torch.sum(total_iou_for_each_class[1:])/(num_step * loader.batch_size * (model.out_channels-1)),
-        #    self.training_step)
-
         for cls in range(model.out_channels):
             self.writer.add_scalar(f"Recall/Average_recall_class_{cls}",
                                    total_recall_for_each_class[cls]/(num_step * loader.batch_size),
                                    self.training_step)
+
+        # take a mean but ignore the unknown class 
         self.writer.add_scalar("meanRecall", 
             torch.sum(total_recall_for_each_class[1:])/(num_step * loader.batch_size * (model.out_channels-1)),
             self.training_step)
@@ -173,11 +161,15 @@ class Logger():
  
             for idx in range(preds_np.shape[0]):
                 
-                rgb_mask = color_group[preds_np[idx]]
-                self.writer.add_image(f'predict/{idx}', rgb_mask/255., self.training_step, dataformats="HWC")
+                binary_mask = np.expand_dims(np.not_equal(y[idx], 0), axis=2)
+                 ##
+                rgb = color_group[preds_np[idx]]
+                rgb_mask = binary_mask * rgb
+                self.writer.add_image(f'{idx}/predict', rgb/255., self.training_step, dataformats="HWC")
+                self.writer.add_image(f'{idx}/masked_predict', rgb_mask/255., self.training_step, dataformats="HWC")
 
                 rgb_mask_groundtruth = color_group[y[idx]]
-                self.writer.add_image(f'target/{idx}_mask', rgb_mask_groundtruth/255., self.training_step, dataformats="HWC")
+                self.writer.add_image(f'{idx}/target', rgb_mask_groundtruth/255., self.training_step, dataformats="HWC")
 
         model.train()
 

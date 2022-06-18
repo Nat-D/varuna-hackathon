@@ -8,11 +8,9 @@ class DoubleConv(nn.Module):
     def __init__(self, in_channels, out_channels):
         super(DoubleConv, self).__init__()
         self.conv = nn.Sequential(
-                nn.Conv2d(in_channels, out_channels, 3, 1, 1, bias=False),
-                nn.BatchNorm2d(out_channels), 
+                nn.Conv2d(in_channels, out_channels, 3, 1, 1),
                 nn.ReLU(inplace=True),
-                nn.Conv2d(out_channels, out_channels, 3, 1, 1, bias=False),
-                nn.BatchNorm2d(out_channels), 
+                nn.Conv2d(out_channels, out_channels, 3, 1, 1), 
                 nn.ReLU(inplace=True),
             )
 
@@ -94,10 +92,7 @@ class NoNameUNET(nn.Module):
 
         # preprocess - standardize input
         x = self.preprocess(x)
-
-        # add more stuff here?
-
-
+        
         # unet model
         skip_connections = []
         for down in self.downs:

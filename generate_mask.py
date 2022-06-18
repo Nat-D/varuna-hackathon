@@ -21,6 +21,7 @@ from utils import color_group
 
 ## tutorial from https://lpsmlgeo.github.io/2019-09-22-binary_mask/
 
+
 raster_path = "raw_data/sentinel-2-image/2021/20210106/IMG_DATA/47PQS_20210106_B02.jp2"
 
 def generate_mask(shape_path, src, test=False):
@@ -128,10 +129,10 @@ if __name__ == "__main__":
     testing_shape_path = "raw_data/testing_area/"
 
     with rasterio.open(raster_path, "r") as src:
-        #poly_shp_train, poly_shp_val = generate_mask(training_shape_path, src)
+        poly_shp_train, poly_shp_val = generate_mask(training_shape_path, src)
 
-        #package(poly_shp_train, 'v2_train_', src)
-        #package(poly_shp_val, 'v2_val_', src)
+        package(poly_shp_train, 'raw_data/train_', src)
+        package(poly_shp_val, 'raw_data/val_', src)
 
         poly_shp_test = generate_mask(testing_shape_path, src, test=True)
         im_size = (src.meta['height'], src.meta['width'])
@@ -139,5 +140,5 @@ if __name__ == "__main__":
         cv2.imwrite('test_mask.png', test_mask*255)
         np.save('test_label.npy', test_mask)
 
-        # TODO: mask with [unknown, cassava, rice, maize, sugarcane, *background*] 
+        print('Mask Generated -- see /raw_data/')
         
