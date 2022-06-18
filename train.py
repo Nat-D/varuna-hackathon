@@ -35,7 +35,7 @@ IMAGE_HEIGHT = 512 #128
 IMAGE_WIDTH = 512 #128
 VAL_HEIGHT = 512
 VAL_WIDTH = 512
-#MIN_MAX_HEIGHT = (96,128)
+MIN_MAX_HEIGHT = (500,512)
 PIN_MEMORY = True
 
 
@@ -75,12 +75,12 @@ def main():
     train_transform = A.Compose([
             A.ToFloat(max_value=65535.0), # support uint16
             A.Resize(height=IMAGE_HEIGHT, width=IMAGE_WIDTH),
-            #A.RandomSizedCrop(min_max_height=MIN_MAX_HEIGHT, 
-            #                  height=IMAGE_HEIGHT, width=IMAGE_WIDTH, p=0.2),
+            A.RandomSizedCrop(min_max_height=MIN_MAX_HEIGHT, 
+                              height=IMAGE_HEIGHT, width=IMAGE_WIDTH, p=0.2),
             A.Rotate(limit= 90, p=1.0),  
             A.HorizontalFlip(p=0.5),
             A.VerticalFlip(p=0.5),
-            #A.ElasticTransform(p=0.8, alpha=120, sigma=120 * 0.05, alpha_affine=120 * 0.03), # try grid dropout, randomgridshuffle
+            A.ElasticTransform(p=0.8, alpha=120, sigma=120 * 0.05, alpha_affine=120 * 0.03), # try grid dropout, randomgridshuffle
             ToTensorV2()
         ])
 
