@@ -6,6 +6,7 @@ import numpy as np
 import os 
 import cv2 
 import numpy
+from features import *
 
 SIZE = (2051,2051)
 
@@ -30,12 +31,13 @@ def get_raw_data_paths(year, date):
     paths['wvp'] = os.path.join(raw_data_dir, year, date, 'IMG_DATA/47PQS_'+ date + '_WVP.jp2')
     return paths
 
-def combine_spectrum(paths):
+def combine_spectrum(paths, max_ndvi):
 
     raw_spectrum = {}
     for band, path in paths.items():
         raw_spectrum[band] = cv2.resize(cv2.imread(path, cv2.IMREAD_ANYDEPTH), dsize=SIZE)
     # ignore scl/tci/wvp just to keep it raw
+
     combined = np.dstack((raw_spectrum['aot'], 
                           raw_spectrum['b1'], 
                           raw_spectrum['b2'], 
@@ -47,8 +49,37 @@ def combine_spectrum(paths):
                           raw_spectrum['b8'], 
                           raw_spectrum['b8a'], 
                           raw_spectrum['b11'], 
-                          raw_spectrum['b12']))
+                          raw_spectrum['b12'],
+                          max_ndvi))
     return combined
+
+def get_raw_sepctrum(paths):
+    raw_spectrum = {}
+    for band, path in paths.items():
+        raw_spectrum[band] = cv2.resize(cv2.imread(path, cv2.IMREAD_ANYDEPTH), dsize=SIZE)   
+    return raw_spectrum
+
+
+
+def max_ndvi_cross_time():
+
+    img_ndvi = np.zeros(SIZE)
+
+    for year in ['2020', '2021']:
+        dates = os.listdir(os.path.join(raw_data_dir, year))
+        for date in dates:
+
+            paths = get_raw_data_paths(year, date)
+            try:
+                raw_spectrum = get_raw_sepctrum( {'b4': paths['b4'], 'b8': paths['b8']})
+                current_img_ndvi = ndvi(raw_spectrum)
+                img_ndvi = np.maximum(img_ndvi, current_img_ndvi)
+            except:
+                pass
+
+    return img_ndvi
+
+
 
 
 
@@ -62,8 +93,7 @@ def random_crop_data(crop_size, img, label):
     return croped_img, croped_label
 
 
-if __name__ == "__main__":
-
+def create_dataset():
     from pathlib import Path
     Path("data/train/img/").mkdir(parents=True, exist_ok=True)
     Path("data/train/mask/").mkdir(parents=True, exist_ok=True)
@@ -93,9 +123,13 @@ if __name__ == "__main__":
     train_label = np.load("raw_data/train_label.npy") # generated from generate_mask.py
     val_label = np.load("raw_data/val_label.npy")
 
+    max_ndvi = max_ndvi_cross_time()
+
+    print('generating dataset')
+
     for day in days:
         paths = get_raw_data_paths('2021', str(day))
-        combined = combine_spectrum(paths)
+        combined = combine_spectrum(paths, max_ndvi)
 
         # for some reason some samples are missing
         num_crop_per_img = 60
@@ -114,3 +148,7 @@ if __name__ == "__main__":
 
 
     print('Succesfully create a dataset')
+
+if __name__ == "__main__":
+
+    create_dataset()

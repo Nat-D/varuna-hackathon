@@ -94,18 +94,20 @@ class NoNameUNET(nn.Module):
 
     def forward(self, x):
 
-        """
-        max_ndvi = x[:,-1,:,:] # the final channel is our max(ndvi) across time
+        B = x.shape[0]
+        C = x.shape[1]
+        H = x.shape[2]
+        W = x.shape[3]
+
+        max_ndvi = x[:,-1,:,:].view(B,1,H,W)
         unnormalized_x = x[:,:-1,: ,: ]  # the remaining
 
         # preprocess - standardize input
         x = self.preprocess(unnormalized_x)
+        x = torch.cat((x, max_ndvi), dim=1)  # concat back
         
-        x = torch.cat((x, max_ndvix), dim=1)  # concat back
-        """
-
         x = self.preprocess(x)
-        
+
         # unet model
         skip_connections = []
         for down in self.downs:
