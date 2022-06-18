@@ -15,10 +15,6 @@
 7. pip install tqdm
 
 
-### Use a Pretrained Model
-
-xxxx
-
 
 ### Train your model
 
@@ -28,6 +24,17 @@ xxxx
 4. Run `python train.py --name "my_model" --save` to train and save your model. 
 5. Run `tensorbaord --logdir=runs` to visualize the training. 
 
+
+
+### Use pretrained model to predict the test shape
+
+1. Edit both raster_path and testing_shape_path in `generate_test_mask.py` 
+2. Run `python generate_test_mask.py` to generate mask for each polygons with index numbers in the testing area
+3. Edit the model path and the combined all spectral path in test.py
+4. Run `python test.py` to generate the output csv file.
+
+
+
 ### Code Structure
 
 1. train.py : 
@@ -36,8 +43,9 @@ xxxx
 4. utils.py
 5. generate_data.py
 6. generate_mask.py
-7. (TODO) test.py 
-8. (TODO) test_prediction.csv 
+7. generate_test_mask.py 
+8. test.py
+8. test_output_18_June.csv
 
 
 

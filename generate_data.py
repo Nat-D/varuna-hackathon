@@ -64,7 +64,13 @@ def random_crop_data(crop_size, img, label):
 
 if __name__ == "__main__":
 
-    
+    from pathlib import Path
+    Path("data/train/img/").mkdir(parents=True, exist_ok=True)
+    Path("data/train/mask/").mkdir(parents=True, exist_ok=True)
+    Path("data/val/img/").mkdir(parents=True, exist_ok=True)
+    Path("data/val/mask/").mkdir(parents=True, exist_ok=True)
+
+
     train_label = np.load("raw_data/train_label.npy") # generated from generate_mask.py
     val_label = np.load("raw_data/val_label.npy")
 
