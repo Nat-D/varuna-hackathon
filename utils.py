@@ -172,8 +172,10 @@ class Logger():
                 
                 binary_mask = np.expand_dims(np.not_equal(y[idx], 0), axis=2)
                  ##
-                rgb_mask = binary_mask * color_group[preds_np[idx]]
-                self.writer.add_image(f'{idx}/predict', rgb_mask/255., self.training_step, dataformats="HWC")
+                rgb = color_group[preds_np[idx]]
+                rgb_mask = binary_mask * rgb
+                self.writer.add_image(f'{idx}/predict', rgb/255., self.training_step, dataformats="HWC")
+                self.writer.add_image(f'{idx}/masked_predict', rgb_mask/255., self.training_step, dataformats="HWC")
 
                 rgb_mask_groundtruth = color_group[y[idx]]
                 self.writer.add_image(f'{idx}/target', rgb_mask_groundtruth/255., self.training_step, dataformats="HWC")

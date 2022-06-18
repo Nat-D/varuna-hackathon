@@ -13,7 +13,7 @@ import argparse
 parser = argparse.ArgumentParser()
 parser.add_argument('--name', type=str, default='', help='Experiment name')
 parser.add_argument('--lr', type=float, default=1e-4, help='Learning rate')
-parser.add_argument('--bs', type=int, default=32, help='Batch size')
+parser.add_argument('--bs', type=int, default=64, help='Batch size')
 parser.add_argument('--epochs', type=int, default=10000, help='Number of training epoch')
 parser.add_argument('--preprocess', type=str, default='PS', help='How to standardize input')
 parser.add_argument('--save', action='store_true', default=False, help='save model')
@@ -100,7 +100,7 @@ def main():
         raise NotImplementedError("No model")
 
     # mask out the unknown class
-    weight = torch.tensor([0,1,1.1,1,1.5]).float().to(DEVICE)
+    weight = torch.tensor([0, 1, 1.1, 1, 1.5]).float().to(DEVICE)
     loss_fn = nn.CrossEntropyLoss(weight=weight)
 
     optimizer = optim.AdamW(model.parameters(), lr=LEARNING_RATE)
