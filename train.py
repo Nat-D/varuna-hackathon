@@ -13,7 +13,7 @@ import argparse
 parser = argparse.ArgumentParser()
 parser.add_argument('--name', type=str, default='', help='Experiment name')
 parser.add_argument('--lr', type=float, default=1e-4, help='Learning rate')
-parser.add_argument('--bs', type=int, default=64, help='Batch size')
+parser.add_argument('--bs', type=int, default=128, help='Batch size')
 parser.add_argument('--epochs', type=int, default=10000, help='Number of training epoch')
 parser.add_argument('--preprocess', type=str, default='PS', help='How to standardize input')
 parser.add_argument('--save', action='store_true', default=False, help='save model')

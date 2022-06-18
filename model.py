@@ -61,7 +61,10 @@ class Standardize(nn.Module):
 
 
 class NoNameUNET(nn.Module):
-    def __init__(self, in_channels=12, out_channels=1, features=[64, 128, 256, 512], preprocess=nn.Identity()):
+    def __init__(self, in_channels=12, out_channels=1, 
+        features=[64, 128, 256, 512], 
+        preprocess=nn.Identity()):
+
         super(NoNameUNET, self).__init__()
 
         self.preprocess = preprocess
@@ -88,11 +91,23 @@ class NoNameUNET(nn.Module):
         self.final_conv = nn.Conv2d(features[0], out_channels, kernel_size=1)
 
 
+    def bands_noise(self, x):
+        N = x.shape[0]
+        C = x.shape[1]
+        noise = 0.01 * torch.randn([N, C, 1, 1]).to("cuda") # TODO: clean this later
+        return x + noise
+
+
     def forward(self, x):
 
         # preprocess - standardize input
         x = self.preprocess(x)
         
+
+        # add noise to the bands
+        if self.training:
+            x = self.bands_noise(x)
+
         # unet model
         skip_connections = []
         for down in self.downs:
