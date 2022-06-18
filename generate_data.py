@@ -36,16 +36,16 @@ def combine_spectrum(paths):
     for band, path in paths.items():
         raw_spectrum[band] = cv2.resize(cv2.imread(path, cv2.IMREAD_ANYDEPTH), dsize=SIZE)
     # ignore scl/tci/wvp just to keep it raw
-    combined = np.dstack((raw_spectrum['aot'], 
-                          raw_spectrum['b1'], 
+    combined = np.dstack((#raw_spectrum['aot'], 
+                          #raw_spectrum['b1'], 
                           raw_spectrum['b2'], 
                           raw_spectrum['b3'], 
                           raw_spectrum['b4'], 
-                          raw_spectrum['b5'], 
-                          raw_spectrum['b6'], 
-                          raw_spectrum['b7'], 
+                          #raw_spectrum['b5'], 
+                          #raw_spectrum['b6'], 
+                          #raw_spectrum['b7'], 
                           raw_spectrum['b8'], 
-                          raw_spectrum['b8a'], 
+                          #raw_spectrum['b8a'], 
                           raw_spectrum['b11'], 
                           raw_spectrum['b12']))
     return combined

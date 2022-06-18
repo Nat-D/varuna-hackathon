@@ -91,23 +91,21 @@ class NoNameUNET(nn.Module):
         self.final_conv = nn.Conv2d(features[0], out_channels, kernel_size=1)
 
 
-    def bands_noise(self, x):
-        N = x.shape[0]
-        C = x.shape[1]
-        noise = 0.01 * torch.randn([N, C, 1, 1]).to("cuda") # TODO: clean this later
-        return x + noise
-
 
     def forward(self, x):
 
+        """
+        max_ndvi = x[:,-1,:,:] # the final channel is our max(ndvi) across time
+        unnormalized_x = x[:,:-1,: ,: ]  # the remaining
+
         # preprocess - standardize input
+        x = self.preprocess(unnormalized_x)
+        
+        x = torch.cat((x, max_ndvix), dim=1)  # concat back
+        """
+
         x = self.preprocess(x)
         
-
-        # add noise to the bands
-        if self.training:
-            x = self.bands_noise(x)
-
         # unet model
         skip_connections = []
         for down in self.downs:
