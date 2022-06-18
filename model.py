@@ -106,8 +106,8 @@ class NoNameUNET(nn.Module):
         x = self.preprocess(unnormalized_x)
         x = torch.cat((x, max_ndvi), dim=1)  # concat back
         
-        x = self.preprocess(x)
 
+        
         # unet model
         skip_connections = []
         for down in self.downs:
