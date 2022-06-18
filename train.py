@@ -35,7 +35,7 @@ IMAGE_HEIGHT = 128
 IMAGE_WIDTH = 128
 VAL_HEIGHT = 512
 VAL_WIDTH = 512
-MIN_MAX_HEIGHT = (120,128)
+MIN_MAX_HEIGHT = (96,128)
 PIN_MEMORY = True
 
 
@@ -77,9 +77,10 @@ def main():
             A.Resize(height=IMAGE_HEIGHT, width=IMAGE_WIDTH),
             A.RandomSizedCrop(min_max_height=MIN_MAX_HEIGHT, 
                               height=IMAGE_HEIGHT, width=IMAGE_WIDTH, p=0.2),
-            A.Rotate(limit= 90, p=1.0), 
+            A.Rotate(limit= 90, p=1.0),  
             A.HorizontalFlip(p=0.5),
-            A.VerticalFlip(p=0.5), 
+            A.VerticalFlip(p=0.5),
+            A.ElasticTransform(p=0.8, alpha=120, sigma=120 * 0.05, alpha_affine=120 * 0.03), # try grid dropout, randomgridshuffle
             ToTensorV2()
         ])
 
@@ -99,10 +100,10 @@ def main():
         raise NotImplementedError("No model")
 
     # mask out the unknown class
-    weight = torch.tensor([0,1,1,1,1]).float().to(DEVICE)
+    weight = torch.tensor([0,1,1.1,1,1.5]).float().to(DEVICE)
     loss_fn = nn.CrossEntropyLoss(weight=weight)
 
-    optimizer = optim.Adam(model.parameters(), lr=LEARNING_RATE)
+    optimizer = optim.AdamW(model.parameters(), lr=LEARNING_RATE)
     scaler = torch.cuda.amp.GradScaler()
 
     train_loader, val_loader = get_loaders(
@@ -137,7 +138,14 @@ def main():
                 }
                 save_checkpoint(check_point, filename=f'{LOG_DIR}/my_checkpoint.pth.tar')
         
-
+        # 25 step per epoch 
+        # save with new name at 10k step = 
+        if epoch == 400:
+            check_point = {
+                "state_dict": model.state_dict(),
+                "optimizer": optimizer.state_dict(),
+            }
+            save_checkpoint(check_point, filename=f'{LOG_DIR}/model_at_400epoch.pth.tar')
 
 if __name__ == "__main__":
     main()
