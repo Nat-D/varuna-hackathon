@@ -31,11 +31,11 @@ BATCH_SIZE = args.bs
 BATCH_SIZE_VAL = 4
 NUM_EPOCHS = args.epochs
 NUM_WORKERS = 4
-IMAGE_HEIGHT = 128
-IMAGE_WIDTH = 128
+IMAGE_HEIGHT = 256
+IMAGE_WIDTH = 256
 VAL_HEIGHT = 512
 VAL_WIDTH = 512
-MIN_MAX_HEIGHT = (96,128)
+MIN_MAX_HEIGHT = (224,256)
 PIN_MEMORY = True
 
 
@@ -95,7 +95,7 @@ def main():
                              device=DEVICE)
 
     if args.model == 'UNET':
-        model = NoNameUNET(in_channels=13, out_channels=5, preprocess=preprocess).to(DEVICE)
+        model = NoNameUNET(in_channels=12, out_channels=5, preprocess=preprocess).to(DEVICE)
     else:
         raise NotImplementedError("No model")
 

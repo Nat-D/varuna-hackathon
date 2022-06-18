@@ -93,18 +93,10 @@ class NoNameUNET(nn.Module):
 
 
     def forward(self, x):
-
-        B = x.shape[0]
-        C = x.shape[1]
-        H = x.shape[2]
-        W = x.shape[3]
-
-        max_ndvi = x[:,-1,:,:].view(B,1,H,W)
-        unnormalized_x = x[:,:-1,: ,: ]  # the remaining
-        # preprocess - standardize input
-        x = self.preprocess(unnormalized_x)
-        x = torch.cat((x, max_ndvi), dim=1)  # concat back
         
+        
+        x = self.preprocess(x)
+
 
 
         # unet model

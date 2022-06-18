@@ -31,7 +31,7 @@ def get_raw_data_paths(year, date):
     paths['wvp'] = os.path.join(raw_data_dir, year, date, 'IMG_DATA/47PQS_'+ date + '_WVP.jp2')
     return paths
 
-def combine_spectrum(paths, max_ndvi):
+def combine_spectrum(paths, max_ndvi=None):
 
     raw_spectrum = {}
     for band, path in paths.items():
@@ -50,7 +50,7 @@ def combine_spectrum(paths, max_ndvi):
                           raw_spectrum['b8a'], 
                           raw_spectrum['b11'], 
                           raw_spectrum['b12'],
-                          max_ndvi))
+                        ))
     return combined
 
 def get_raw_sepctrum(paths):
@@ -73,7 +73,10 @@ def max_ndvi_cross_time():
             try:
                 raw_spectrum = get_raw_sepctrum( {'b4': paths['b4'], 'b8': paths['b8']})
                 current_img_ndvi = ndvi(raw_spectrum)
+                current_img_ndvi = numpy.nan_to_num(current_img_ndvi, posinf= 10000, neginf=-10000)
+
                 img_ndvi = np.maximum(img_ndvi, current_img_ndvi)
+
             except:
                 pass
 
@@ -106,7 +109,7 @@ def create_dataset():
 
 
     # Hand selected for good quality images without clouds
-    days = [20210101
+    days = [ 20210101
             ,20210106
             ,20210111
             ,20210116
@@ -123,18 +126,18 @@ def create_dataset():
     train_label = np.load("raw_data/train_label.npy") # generated from generate_mask.py
     val_label = np.load("raw_data/val_label.npy")
 
-    max_ndvi = max_ndvi_cross_time()
+
 
     print('generating dataset')
 
     for day in days:
         paths = get_raw_data_paths('2021', str(day))
-        combined = combine_spectrum(paths, max_ndvi)
+        combined = combine_spectrum(paths) 
 
         # for some reason some samples are missing
         num_crop_per_img = 60
         for i in range(num_crop_per_img): # as a test let's do 20
-            img, label = random_crop_data(crop_size=128, img=combined, label=train_label)
+            img, label = random_crop_data(crop_size=256, img=combined, label=train_label)
             np.save(f'data/train/img/{i+num_crop_per_img*day_idx}.npy', img)
             np.save(f'data/train/mask/{i+num_crop_per_img*day_idx}_label.npy', label)
         
