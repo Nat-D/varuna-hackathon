@@ -137,8 +137,8 @@ if __name__ == "__main__":
         poly_shp_test = generate_mask(testing_shape_path, src, test=True)
         im_size = (src.meta['height'], src.meta['width'])
         test_mask = rasterize(shapes=poly_shp_test, out_shape=im_size)
-        cv2.imwrite('test_mask.png', test_mask*255)
-        np.save('test_label.npy', test_mask)
+        cv2.imwrite('data/test_mask.png', test_mask*255)
+        np.save('data/test_label.npy', test_mask)
 
         print('Mask Generated -- see /raw_data/')
         
