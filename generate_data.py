@@ -97,8 +97,8 @@ if __name__ == "__main__":
             np.save(f'data/train/img/{i+num_crop_per_img*day_idx}.npy', img)
             np.save(f'data/train/mask/{i+num_crop_per_img*day_idx}_label.npy', label)
         
-        num_crop_per_img_val = 5
-        for i in range(5):
+        num_crop_per_img_val = 20
+        for i in range(num_crop_per_img_val):
             img, label = random_crop_data(crop_size=512, img=combined, label=val_label)
             np.save(f'data/val/img/{i+num_crop_per_img_val*day_idx}.npy', img)
             np.save(f'data/val/mask/{i+num_crop_per_img_val*day_idx}_label.npy', label)
