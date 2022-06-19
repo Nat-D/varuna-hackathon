@@ -100,7 +100,7 @@ def main(logger = None, save_dir=None):
         raise NotImplementedError("No model")
 
     # mask out the unknown class
-    weight = torch.tensor([0, 1, 1.1, 1, 1.6]).float().to(DEVICE)
+    weight = torch.tensor([0, 0.8, 1.1, 0.8, 1.2]).float().to(DEVICE)
     loss_fn = nn.CrossEntropyLoss(weight=weight)
 
     optimizer = optim.AdamW(model.parameters(), lr=LEARNING_RATE)

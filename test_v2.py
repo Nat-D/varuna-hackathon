@@ -84,16 +84,13 @@ if __name__ == "__main__":
     model = load_model("runs/finalfinal/my_checkpoint-2000.pth.tar")
     model.eval()
 
-    x = prepare_input('2021','20210416') # todo: select a better date 
+    x = prepare_input('2021','20210220') # todo: select a better date 
 
     pred_np = make_prediction(model, x)
     
 
-    training_shape_path = "raw_data/training_area/"
-    shape_path = training_shape_path
-
-    #testing_shape_path = "raw_data/testing_area/"
-    #shape_path = testing_shape_path
+    testing_shape_path = "raw_data/testing_area/"
+    shape_path = testing_shape_path
     
     class_predictions = np.zeros((0, 2))
 
@@ -122,6 +119,5 @@ if __name__ == "__main__":
 
         column_values = ['index', 'crop_type']
         df = pd.DataFrame(data = sorted_class_predictions, columns = column_values).astype(int)
-        #df.to_csv('test_output_19_june.csv', index = False)
-        df.to_csv('train_prediction.csv', index = False)
+        df.to_csv('test_output_19_june.csv', index = False)
 
