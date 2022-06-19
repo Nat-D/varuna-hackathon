@@ -39,7 +39,7 @@ def combine_spectrum(paths, max_ndvi=None):
     # ignore scl/tci/wvp just to keep it raw
     
     ndvi = features.ndvi(raw_spectrum)
-
+    
     combined = np.dstack((raw_spectrum['aot'], 
                           raw_spectrum['b1'], 
                           raw_spectrum['b2'], 
@@ -53,9 +53,6 @@ def combine_spectrum(paths, max_ndvi=None):
                           raw_spectrum['b11'], 
                           raw_spectrum['b12'],
                           ndvi,
-                          ndvi,
-                          ndvi,
-                          ndvi
                         ))
 
 

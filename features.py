@@ -1,9 +1,12 @@
+
+import numpy as np
+
 # Normalized Difference Vegetation Index (NDVI)
 def ndvi(raw_spectrum):
-    b4 = raw_spectrum['b4']
-    b8 = raw_spectrum['b8']
-
-    ndvi = (b8-b4)/(b8+b4+1e-8)
+    b4 = raw_spectrum['b4'].astype(np.float16)
+    b8 = raw_spectrum['b8'].astype(np.float16)
+    
+    ndvi = b8-b4 / (b8+b4 + 1e-5) 
 
     return ndvi
 
