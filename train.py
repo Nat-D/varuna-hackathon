@@ -147,7 +147,7 @@ def create_ensemble():
     for i in range(5):
         LOG_DIR = f"runs/ensemble_{i}"
         logger = Logger(device=DEVICE, log_dir=LOG_DIR)
-        save_dir = LOG_DIR
+        save_dir = f'{LOG_DIR}/my_checkpoint.pth.tar'
         
         main(logger, save_dir)    
 
