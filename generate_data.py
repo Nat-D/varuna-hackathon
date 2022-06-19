@@ -73,7 +73,7 @@ def max_ndvi_across_time():
 
     img_ndvi = np.zeros(SIZE)
 
-    for year in ['2020', '2021']:
+    for year in ['2021']: #['2020', '2021']:
         dates = os.listdir(os.path.join(raw_data_dir, year))
         for date in dates:
 
