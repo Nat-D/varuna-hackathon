@@ -1,4 +1,5 @@
 # Reproducing the submission on 19 June 5pm
+# 0.34 / 0.47 / 0.31 / 0.27
 
 from test_v2 import *
 import numpy as np

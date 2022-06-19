@@ -55,6 +55,10 @@
 
 ### Model v2
 
-1. incorporate temporal data through computing maximum values of NDVI and EVI across time. We use that as additional channels in the inputs.
+1. incorporate temporal data through computing maximum values of NDVI and EVI across time (only from 2021). We use that as additional channels in the inputs.
 2. BatchNorm between convolutions
 3. extensive augmentations  
+
+### Final submission
+
+We will use the 2nd model for the final submission. If time permitted, training multiple models to perform ensemble estimation might help.
