@@ -30,7 +30,7 @@ def avi(raw_spectrum):
     b4 = raw_spectrum['b4']
     b8 = raw_spectrum['b8']
 
-    avi = (b8*(1-b4)*(b8-b4))**(1/3)
+    avi = (b8*(1.-b4)*(b8-b4))**(1/3)
     return avi
 
 # Soil Adjusted Vegetation Index (SAVI)

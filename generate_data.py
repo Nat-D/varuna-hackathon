@@ -6,7 +6,7 @@ import numpy as np
 import os 
 import cv2 
 import numpy
-from features import *
+import features
 
 SIZE = (2051,2051)
 
@@ -38,13 +38,8 @@ def combine_spectrum(paths, max_ndvi=None):
         raw_spectrum[band] = cv2.resize(cv2.imread(path, cv2.IMREAD_ANYDEPTH), dsize=SIZE)
     # ignore scl/tci/wvp just to keep it raw
     
-    ndvi = ndvi(raw_spectrum)
-    gndvi = gndvi(raw_spectrum)
-    avi = avi(raw_spectrum)
-    ndmi = ndmi(raw_spectrum)
-    evi = evi(raw_spectrum)
+    ndvi = features.ndvi(raw_spectrum)
 
-    """
     combined = np.dstack((raw_spectrum['aot'], 
                           raw_spectrum['b1'], 
                           raw_spectrum['b2'], 
@@ -57,9 +52,11 @@ def combine_spectrum(paths, max_ndvi=None):
                           raw_spectrum['b8a'], 
                           raw_spectrum['b11'], 
                           raw_spectrum['b12'],
+                          ndvi,
+                          ndvi,
+                          ndvi,
+                          ndvi
                         ))
-    """
-    combined = np.dstack((ndvi, gndvi, avi, ndmi, evi))
 
 
     return combined

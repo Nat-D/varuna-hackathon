@@ -94,10 +94,12 @@ class NoNameUNET(nn.Module):
 
     def forward(self, x):
         
-        
-        #x = self.preprocess(x)
+        ndvis = x[:, 12:, :, :]
 
+        bands = x[:, :12, :, :]
+        x = self.preprocess(bands)
 
+        x = torch.cat((x, ndvis), dim=1)
 
         # unet model
         skip_connections = []
