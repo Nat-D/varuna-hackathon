@@ -38,6 +38,7 @@
     https://drive.google.com/drive/folders/1drKdEeyS_zlUwh0ncXA4hyCx7ZHXhVx7?usp=sharing
 
 2. Run `python reproducing_first_submission.py` to reproduce the first submission
+<img src="v1_test_pred.png " width="200">
 
 3. Run `python reproducing_second_submission.py` to reproduce the 2nd submission
-
+<img src="v2_test_pred.png " width="200">
