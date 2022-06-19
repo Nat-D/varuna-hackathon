@@ -40,7 +40,7 @@ def combine_spectrum(paths, max_ndvi=None):
         raw_spectrum[band] = cv2.resize(cv2.imread(path, cv2.IMREAD_ANYDEPTH), dsize=SIZE)
     # ignore scl/tci/wvp just to keep it raw
     
-    ndvi = features.ndvi(raw_spectrum)
+    #ndvi = features.ndvi(raw_spectrum)
     
     combined = np.dstack((raw_spectrum['aot'], 
                           raw_spectrum['b1'], 
@@ -54,7 +54,7 @@ def combine_spectrum(paths, max_ndvi=None):
                           raw_spectrum['b8a'], 
                           raw_spectrum['b11'], 
                           raw_spectrum['b12'],
-                          ndvi,
+                          max_ndvi,
                         ))
 
 
@@ -68,7 +68,7 @@ def get_raw_spectrum(paths):
 
 
 
-def max_ndvi_cross_time():
+def max_ndvi_across_time():
 
     img_ndvi = np.zeros(SIZE)
 
@@ -131,12 +131,13 @@ def create_dataset():
     val_label = np.load("raw_data/val_label.npy")
 
 
+    max_ndvi = max_ndvi_across_time()
 
     print('generating dataset')
 
     for day in days:
         paths = get_raw_data_paths('2021', str(day))
-        combined = combine_spectrum(paths) 
+        combined = combine_spectrum(paths, max_ndvi) 
 
         # for some reason some samples are missing
         num_crop_per_img = 60
@@ -145,7 +146,7 @@ def create_dataset():
             np.save(f'data/train/img/{i+num_crop_per_img*day_idx}.npy', img)
             np.save(f'data/train/mask/{i+num_crop_per_img*day_idx}_label.npy', label)
         
-        num_crop_per_img_val = 20
+        num_crop_per_img_val = 8 #20
         for i in range(num_crop_per_img_val):
             img, label = random_crop_data(crop_size=VAL_HEIGHT, img=combined, label=val_label)
             np.save(f'data/val/img/{i+num_crop_per_img_val*day_idx}.npy', img)
