@@ -68,6 +68,11 @@ if __name__ == "__main__":
     
     testing_shape_path = "raw-data/testing_area/"
 
+    
+    from pathlib import Path
+    Path(testing_shape_path).mkdir(parents=True, exist_ok=True)
+
+
     with rasterio.open(raster_path, "r") as src:
         poly_shp_test = generate_test_mask(testing_shape_path, src, test=True)
 

@@ -14,7 +14,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument('--name', type=str, default='', help='Experiment name')
 parser.add_argument('--lr', type=float, default=1e-4, help='Learning rate')
 parser.add_argument('--bs', type=int, default=32, help='Batch size')
-parser.add_argument('--epochs', type=int, default=10000, help='Number of training epoch')
+parser.add_argument('--epochs', type=int, default=41, help='Number of training epoch')
 parser.add_argument('--preprocess', type=str, default='PS', help='How to standardize input')
 parser.add_argument('--load', action='store_true', default=False, help='load model')
 parser.add_argument('--model', type=str, default='UNET', help='Select your model')
@@ -138,12 +138,23 @@ def main():
                 }
                 save_checkpoint(check_point, filename=f'{LOG_DIR}/my_checkpoint.pth.tar')
         
+        if epoch == 40:
+            check_point = {
+                "state_dict": model.state_dict(),
+                "optimizer": optimizer.state_dict(),
+            }
+            save_checkpoint(check_point, filename=f'{LOG_DIR}/model_at_40epoch.pth.tar')
+
         if epoch == 100:
             check_point = {
                 "state_dict": model.state_dict(),
                 "optimizer": optimizer.state_dict(),
             }
             save_checkpoint(check_point, filename=f'{LOG_DIR}/model_at_100epoch.pth.tar')
+
+
+
+
 
 if __name__ == "__main__":
     main()
