@@ -28,24 +28,9 @@
 
 ### Use pretrained model to predict the test shape
 
-1. Edit both raster_path and testing_shape_path in `generate_test_mask.py` 
-2. Run `python generate_test_mask.py` to generate mask for each polygons with index numbers in the testing area
-3. Edit the model path and the combined all spectral path in test.py
-4. Run `python test.py` to generate the output csv file.
+1. Prepare your data into appropriate folders
+2. Run `python test_v2.py`
 
-
-
-### Code Structure
-
-1. train.py : 
-2. model.py
-3. dataset.py
-4. utils.py
-5. generate_data.py
-6. generate_mask.py
-7. generate_test_mask.py 
-8. test.py
-8. test_output_18_June.csv
 
 
 
