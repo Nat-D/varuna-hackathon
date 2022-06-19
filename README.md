@@ -31,6 +31,13 @@
 1. Prepare your data into appropriate folders
 2. Run `python test_v2.py`
 
-Our pretrained model can be downloaded here:
-https://drive.google.com/file/d/1xbTvoCJGz3isiTCeTCiG70wtiSa05SAC/view?usp=sharing
+
+### Reproducing the CSV results
+
+1. Our pretrained model can be downloaded here:
+    https://drive.google.com/drive/folders/1drKdEeyS_zlUwh0ncXA4hyCx7ZHXhVx7?usp=sharing
+
+2. Run `python reproducing_first_submission.py` to reproduce the first submission
+
+3. Run `python reproducing_second_submission.py` to reproduce the 2nd submission
 

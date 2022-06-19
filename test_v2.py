@@ -57,7 +57,7 @@ def make_prediction(model, x):
 
     pred_rgb = color_group[pred_np].astype(np.uint8)
     pred_rgb = Image.fromarray(pred_rgb)
-    pred_rgb.save("test_pred.png")
+    pred_rgb.save("v2_test_pred.png")
 
     return pred_np
 
@@ -79,9 +79,9 @@ def poly_from_utm(polygon, transform):
 
 if __name__ == "__main__":
 
-    #save_max_ndvi_evi() # only do this once
+    # save_max_ndvi_evi() # only do this once
 
-    model = load_model("runs/finalfinal/my_checkpoint-2000.pth.tar")
+    model = load_model("models/model_2.pth.tar")
     model.eval()
 
     x = prepare_input('2021','20210220') # todo: select a better date 
