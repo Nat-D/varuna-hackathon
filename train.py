@@ -71,7 +71,7 @@ def train_fn(loader, model, optimizer, loss_fn, scaler, logger):
         # log training 
         logger.log_step(loss.item())
 
-def main(logger = None):
+def main(logger = None, save_dir=None):
     train_transform = A.Compose([
             A.ToFloat(max_value=65535.0), # support uint16
             A.Resize(height=IMAGE_HEIGHT, width=IMAGE_WIDTH),
@@ -125,6 +125,8 @@ def main(logger = None):
     if logger is None:
         logger = Logger(device=DEVICE, log_dir=LOG_DIR)
     
+    if save_dir is None:
+        save_dir = f'{LOG_DIR}/my_checkpoint.pth.tar'
 
     for epoch in range(NUM_EPOCHS): 
         train_fn(train_loader, model, optimizer, loss_fn, scaler, logger)
@@ -137,22 +139,7 @@ def main(logger = None):
                 "state_dict": model.state_dict(),
                 "optimizer": optimizer.state_dict(),
                 }
-                save_checkpoint(check_point, filename=f'{LOG_DIR}/my_checkpoint.pth.tar')
-        
-        if epoch == 40:
-            check_point = {
-                "state_dict": model.state_dict(),
-                "optimizer": optimizer.state_dict(),
-            }
-            save_checkpoint(check_point, filename=f'{LOG_DIR}/model_at_40epoch.pth.tar')
-
-        if epoch == 100:
-            check_point = {
-                "state_dict": model.state_dict(),
-                "optimizer": optimizer.state_dict(),
-            }
-            save_checkpoint(check_point, filename=f'{LOG_DIR}/model_at_100epoch.pth.tar')
-
+                save_checkpoint(check_point, filename=save_dir)
 
 
 
@@ -160,7 +147,9 @@ def create_ensemble():
     for i in range(5):
         LOG_DIR = f"runs/ensemble_{i}"
         logger = Logger(device=DEVICE, log_dir=LOG_DIR)
-        main(logger)    
+        save_dir = LOG_DIR
+        
+        main(logger, save_dir)    
 
 
 if __name__ == "__main__":
