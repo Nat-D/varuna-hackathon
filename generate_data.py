@@ -8,6 +8,8 @@ import cv2
 import numpy
 import features
 
+from train import IMAGE_HEIGHT, VAL_HEIGHT 
+
 SIZE = (2051,2051)
 
 raw_data_dir = "raw_data/sentinel-2-image/"
@@ -58,7 +60,7 @@ def combine_spectrum(paths, max_ndvi=None):
 
     return combined
 
-def get_raw_sepctrum(paths):
+def get_raw_spectrum(paths):
     raw_spectrum = {}
     for band, path in paths.items():
         raw_spectrum[band] = cv2.resize(cv2.imread(path, cv2.IMREAD_ANYDEPTH), dsize=SIZE)   
@@ -76,7 +78,7 @@ def max_ndvi_cross_time():
 
             paths = get_raw_data_paths(year, date)
             try:
-                raw_spectrum = get_raw_sepctrum( {'b4': paths['b4'], 'b8': paths['b8']})
+                raw_spectrum = get_raw_spectrum( {'b4': paths['b4'], 'b8': paths['b8']})
                 current_img_ndvi = ndvi(raw_spectrum)
                 img_ndvi = np.maximum(img_ndvi, current_img_ndvi)
             except:
@@ -139,13 +141,13 @@ def create_dataset():
         # for some reason some samples are missing
         num_crop_per_img = 60
         for i in range(num_crop_per_img): # as a test let's do 20
-            img, label = random_crop_data(crop_size=256, img=combined, label=train_label)
+            img, label = random_crop_data(crop_size=IMAGE_HEIGHT, img=combined, label=train_label)
             np.save(f'data/train/img/{i+num_crop_per_img*day_idx}.npy', img)
             np.save(f'data/train/mask/{i+num_crop_per_img*day_idx}_label.npy', label)
         
         num_crop_per_img_val = 20
         for i in range(num_crop_per_img_val):
-            img, label = random_crop_data(crop_size=512, img=combined, label=val_label)
+            img, label = random_crop_data(crop_size=VAL_HEIGHT, img=combined, label=val_label)
             np.save(f'data/val/img/{i+num_crop_per_img_val*day_idx}.npy', img)
             np.save(f'data/val/mask/{i+num_crop_per_img_val*day_idx}_label.npy', label)
         
