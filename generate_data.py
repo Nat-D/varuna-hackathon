@@ -37,7 +37,8 @@ def combine_spectrum(paths, max_ndvi=None):
 
     raw_spectrum = {}
     for band, path in paths.items():
-        raw_spectrum[band] = cv2.resize(cv2.imread(path, cv2.IMREAD_ANYDEPTH), dsize=SIZE)
+        # prone to bug/ check whether cv2 read int16 correctly.
+        raw_spectrum[band] = cv2.resize(cv2.imread(path, cv2.IMREAD_ANYDEPTH).astype(np.float16), dsize=SIZE)
     # ignore scl/tci/wvp just to keep it raw
     
     #ndvi = features.ndvi(raw_spectrum)
@@ -63,7 +64,7 @@ def combine_spectrum(paths, max_ndvi=None):
 def get_raw_spectrum(paths):
     raw_spectrum = {}
     for band, path in paths.items():
-        raw_spectrum[band] = cv2.resize(cv2.imread(path, cv2.IMREAD_ANYDEPTH), dsize=SIZE)   
+        raw_spectrum[band] = cv2.resize(cv2.imread(path, cv2.IMREAD_ANYDEPTH), dsize=SIZE).astype(np.float16)   
     return raw_spectrum
 
 
