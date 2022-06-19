@@ -31,6 +31,6 @@
 1. Prepare your data into appropriate folders
 2. Run `python test_v2.py`
 
-
-
+Our pretrained model can be downloaded here:
+https://drive.google.com/file/d/1xbTvoCJGz3isiTCeTCiG70wtiSa05SAC/view?usp=sharing
 
