@@ -15,7 +15,7 @@ val/
 *.npy
 runs/
 *.png
-
+*.tar
 
 # C extensions
 *.so
