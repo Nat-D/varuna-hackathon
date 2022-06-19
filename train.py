@@ -71,7 +71,7 @@ def train_fn(loader, model, optimizer, loss_fn, scaler, logger):
         # log training 
         logger.log_step(loss.item())
 
-def main():
+def main(logger = None):
     train_transform = A.Compose([
             A.ToFloat(max_value=65535.0), # support uint16
             A.Resize(height=IMAGE_HEIGHT, width=IMAGE_WIDTH),
@@ -122,7 +122,8 @@ def main():
     if args.load:
         load_checkpoint(torch.load(f'{LOG_DIR}/my_checkpoint.pth.tar'), model)
 
-    logger = Logger(device=DEVICE, log_dir=LOG_DIR)
+    if logger is None:
+        logger = Logger(device=DEVICE, log_dir=LOG_DIR)
     
 
     for epoch in range(NUM_EPOCHS): 
@@ -155,6 +156,13 @@ def main():
 
 
 
+def create_ensemble():
+    for i in range(5):
+        LOG_DIR = f"runs/ensemble_{i}"
+        logger = Logger(device=DEVICE, log_dir=LOG_DIR)
+        main(logger)    
+
 
 if __name__ == "__main__":
-    main()
+    create_ensemble()
+    #main()
