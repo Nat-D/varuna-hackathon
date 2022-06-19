@@ -16,7 +16,6 @@ parser.add_argument('--lr', type=float, default=1e-4, help='Learning rate')
 parser.add_argument('--bs', type=int, default=32, help='Batch size')
 parser.add_argument('--epochs', type=int, default=10000, help='Number of training epoch')
 parser.add_argument('--preprocess', type=str, default='PS', help='How to standardize input')
-parser.add_argument('--save', action='store_true', default=False, help='save model')
 parser.add_argument('--load', action='store_true', default=False, help='load model')
 parser.add_argument('--model', type=str, default='UNET', help='Select your model')
 args = parser.parse_args()
@@ -37,7 +36,8 @@ VAL_HEIGHT = 512
 VAL_WIDTH = 512
 MIN_MAX_HEIGHT = (224,256)
 PIN_MEMORY = True
-
+IN_CHANNELS = 13
+SAVE = True
 
 TRAIN_IMG_DIR = "data/train/img/"
 TRAIN_MASK_DIR = "data/train/mask/"
@@ -95,7 +95,7 @@ def main():
                              device=DEVICE)
 
     if args.model == 'UNET':
-        model = NoNameUNET(in_channels=16, out_channels=5, preprocess=preprocess).to(DEVICE)
+        model = NoNameUNET(in_channels=IN_CHANNELS, out_channels=5, preprocess=preprocess).to(DEVICE)
     else:
         raise NotImplementedError("No model")
 
@@ -131,7 +131,7 @@ def main():
 
         # save every 10 epoch
         if epoch % 10 == 0:
-            if args.save:
+            if SAVE:
                 check_point = {
                 "state_dict": model.state_dict(),
                 "optimizer": optimizer.state_dict(),

@@ -78,10 +78,7 @@ def max_ndvi_cross_time():
             try:
                 raw_spectrum = get_raw_sepctrum( {'b4': paths['b4'], 'b8': paths['b8']})
                 current_img_ndvi = ndvi(raw_spectrum)
-                current_img_ndvi = numpy.nan_to_num(current_img_ndvi, posinf= 10000, neginf=-10000)
-
                 img_ndvi = np.maximum(img_ndvi, current_img_ndvi)
-
             except:
                 pass
 
