@@ -13,7 +13,7 @@ import geopandas as gpd
 import pandas as pd
 
 
-DEVICE = "cuda"
+DEVICE = "cpu"
 
 
 def load_model(model_dir):
@@ -21,6 +21,7 @@ def load_model(model_dir):
     model = NoNameUNET(in_channels=14, out_channels=5, preprocess=preprocess).to(DEVICE)
     model.load_state_dict(torch.load(model_dir, map_location = torch.device(DEVICE))["state_dict"])
     model.eval()
+
     return model 
 
 def load_max_ndvi_evi():
@@ -80,16 +81,19 @@ if __name__ == "__main__":
 
     #save_max_ndvi_evi() # only do this once
 
-    model = load_model("runs/ensemble_0/my_checkpoint.pth.tar")
-    x = prepare_input('2021','20210101')
+    model = load_model("runs/finalfinal/my_checkpoint-2000.pth.tar")
+    model.eval()
+
+    x = prepare_input('2021','20210416') # todo: select a better date 
 
     pred_np = make_prediction(model, x)
     
 
-    #training_shape_path = "raw_data/training_area/"
-    testing_shape_path = "raw_data/testing_area/"
+    training_shape_path = "raw_data/training_area/"
+    shape_path = training_shape_path
 
-    shape_path = testing_shape_path
+    #testing_shape_path = "raw_data/testing_area/"
+    #shape_path = testing_shape_path
     
     class_predictions = np.zeros((0, 2))
 
@@ -118,5 +122,6 @@ if __name__ == "__main__":
 
         column_values = ['index', 'crop_type']
         df = pd.DataFrame(data = sorted_class_predictions, columns = column_values).astype(int)
-        df.to_csv('test_output_19_june.csv', index = False)
+        #df.to_csv('test_output_19_june.csv', index = False)
+        df.to_csv('train_prediction.csv', index = False)
 

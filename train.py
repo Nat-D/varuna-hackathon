@@ -14,7 +14,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument('--name', type=str, default='', help='Experiment name')
 parser.add_argument('--lr', type=float, default=1e-4, help='Learning rate')
 parser.add_argument('--bs', type=int, default=32, help='Batch size')
-parser.add_argument('--epochs', type=int, default=80, help='Number of training epoch')
+parser.add_argument('--epochs', type=int, default=101, help='Number of training epoch')
 parser.add_argument('--preprocess', type=str, default='PS', help='How to standardize input')
 parser.add_argument('--load', action='store_true', default=False, help='load model')
 parser.add_argument('--model', type=str, default='UNET', help='Select your model')
@@ -145,13 +145,12 @@ def main(logger = None, save_dir=None):
 
 def create_ensemble():
     for i in range(5):
-        LOG_DIR = f"runs/longer_ensemble_{i}"
+        LOG_DIR = f"runs/{args.name}_{i}"
         logger = Logger(device=DEVICE, log_dir=LOG_DIR)
         save_dir = f'{LOG_DIR}/my_checkpoint.pth.tar'
-        
         main(logger, save_dir)    
 
 
 if __name__ == "__main__":
-    create_ensemble()
-    #main()
+    #create_ensemble()
+    main()
