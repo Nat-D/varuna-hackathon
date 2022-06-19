@@ -33,7 +33,7 @@ def get_raw_data_paths(year, date):
     paths['wvp'] = os.path.join(raw_data_dir, year, date, 'IMG_DATA/47PQS_'+ date + '_WVP.jp2')
     return paths
 
-def combine_spectrum(paths, max_ndvi=None):
+def combine_spectrum(paths, max_ndvi=None, max_evi=None):
 
     raw_spectrum = {}
     for band, path in paths.items():
@@ -41,8 +41,7 @@ def combine_spectrum(paths, max_ndvi=None):
         raw_spectrum[band] = cv2.resize(cv2.imread(path, cv2.IMREAD_ANYDEPTH).astype(np.uint16), dsize=SIZE)
     # ignore scl/tci/wvp just to keep it raw
     
-    #ndvi = features.ndvi(raw_spectrum)
-    
+    # add max_ndvi, max_evi to incorporate temporal information    
     combined = np.dstack((raw_spectrum['aot'], 
                           raw_spectrum['b1'], 
                           raw_spectrum['b2'], 
@@ -56,8 +55,8 @@ def combine_spectrum(paths, max_ndvi=None):
                           raw_spectrum['b11'], 
                           raw_spectrum['b12'],
                           max_ndvi,
+                          max_evi
                         ))
-
 
     return combined
 
@@ -87,7 +86,23 @@ def max_ndvi_across_time():
 
     return img_ndvi
 
+def max_evi_across_time():
 
+    img_evi = np.zeros(SIZE)
+
+    for year in ['2021']: #['2020', '2021']:
+        dates = os.listdir(os.path.join(raw_data_dir, year))
+        for date in dates:
+
+            paths = get_raw_data_paths(year, date)
+            try:
+                raw_spectrum = get_raw_spectrum( {'b2' :paths['b2'],'b4': paths['b4'], 'b8': paths['b8']})
+                current_img_evi = evi(raw_spectrum)
+                img_evi = np.maximum(img_evi, current_img_evi)
+            except:
+                pass
+
+    return img_evi
 
 
 
@@ -133,12 +148,13 @@ def create_dataset():
 
 
     max_ndvi = max_ndvi_across_time()
+    max_evi = max_evi_across_time()
 
     print('generating dataset')
 
     for day in days:
         paths = get_raw_data_paths('2021', str(day))
-        combined = combine_spectrum(paths, max_ndvi) 
+        combined = combine_spectrum(paths, max_ndvi, max_evi) 
 
         # for some reason some samples are missing
         num_crop_per_img = 60

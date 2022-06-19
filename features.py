@@ -10,6 +10,27 @@ def ndvi(raw_spectrum):
 
     return ndvi
 
+
+# Enhanced Vegetation Index (EVI)
+def evi(raw_spectrum):
+    b2 = raw_spectrum['b2'].astype(np.float16)
+    b4 = raw_spectrum['b4'].astype(np.float16)
+    b8 = raw_spectrum['b8'].astype(np.float16)
+
+    evi = 2.5*((b8-b4)/(b8+6*b4-7.5*b2+1 + 1e-5))
+    return evi
+
+
+
+# Normalized Difference Water Index (NDWI)
+def ndwi(raw_spectrum):
+    b3 = raw_spectrum['b3'].astype(np.float16)
+    b8 = raw_spectrum['b8'].astype(np.float16)
+
+    ndwi = (b3-b8)/(b3+b8+1e-8)
+    return ndwi
+
+
 # Green Normalized Difference Vegetation Index (GNDVI)
 def gndvi(raw_spectrum):
     b3 = raw_spectrum['b3']
@@ -19,14 +40,7 @@ def gndvi(raw_spectrum):
 
     return gndvi
 
-# Enhanced Vegetation Index (EVI)
-def evi(raw_spectrum):
-    b2 = raw_spectrum['b2']
-    b4 = raw_spectrum['b4']
-    b8 = raw_spectrum['b8']
 
-    evi = 2.5*((b8-b4)/(b8+6*b4-7.5*b2+1))
-    return evi
 
 # Advanced Vegetation Index (AVI)
 def avi(raw_spectrum):
@@ -86,13 +100,6 @@ def bsi(raw_spectrum):
     bsi = ((b11+b4)-(b8+b2))/((b11+b4)+(b8+b2)+1e-8)
     return bsi
 
-# Normalized Difference Water Index (NDWI)
-def ndwi(raw_spectrum):
-    b3 = raw_spectrum['b3']
-    b8 = raw_spectrum['b8']
-
-    ndwi = (b3-b8)/(b3+b8+1e-8)
-    return ndwi
 
 # Normalized Difference Snow Index (NDSI)
 def ndsi(raw_spectrum):
