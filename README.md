@@ -42,3 +42,19 @@
 
 3. Run `python reproducing_second_submission.py` to reproduce the 2nd submission
 <img src="v2_test_pred.png " width="200">
+
+
+
+### Model v1
+
+1. A standard UNET segmentation
+2. standardise input with per-sample statistics to avoid losing relative magnitudes between bands
+3. extensive augmentations
+4. a lot of hyper-param tuning
+5. reduce the training image size to avoid model remebering exact location 
+
+### Model v2
+
+1. incorporate temporal data through computing maximum values of NDVI and EVI across time. We use that as additional channels in the inputs.
+2. BatchNorm between convolutions
+3. extensive augmentations  
